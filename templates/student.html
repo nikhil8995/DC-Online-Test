@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Portal</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>Student Portal</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/teacher">Teacher</a>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Available Exams</h2>
+            {% if exams and exams|length > 0 %}
+            <ul class="cards">
+                {% for e in exams %}
+                <li class="card">
+                    <h3>{{ e.title or 'Untitled Exam' }}</h3>
+                    <p>Server: {{ e.server_id }}</p>
+                    <p>Questions: {{ e.num_questions }} | Duration: {{ e.duration }}s</p>
+                    <p>Capacity: {{ e.capacity }} | Active: {{ e.active_sessions }}</p>
+                    <form method="post" action="/student/start">
+                        <input type="hidden" name="from_ui" value="1" />
+                        <label>Username
+                            <input name="username" placeholder="Your name" required />
+                        </label>
+                        <button type="submit">Start Exam</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No exams configured yet. Please check back later.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+
+</html>

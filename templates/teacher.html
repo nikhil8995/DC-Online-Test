@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Teacher Console</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script defer src="/static/app.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Teacher Console</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/student">Student</a>
+        </nav>
+    </header>
+    <main>
+        {% if error %}
+        <div class="msg error">{{ error }}</div>
+        {% endif %}
+        {% if success %}
+        <div class="msg success">{{ success }}</div>
+        {% endif %}
+        <section>
+            <h2>Configure Exam</h2>
+            <form id="examForm" method="post" action="/teacher/configure" class="card">
+                <div class="grid">
+                    <label>Title
+                        <input type="text" name="title" placeholder="Exam title" required />
+                    </label>
+                    <label>Duration (seconds)
+                        <input type="number" name="duration" min="30" value="60" required />
+                    </label>
+                    <label>Capacity per server
+                        <input type="number" name="capacity" min="1" value="2" required />
+                    </label>
+                </div>
+
+                <div class="builder-header">
+                    <h3>Questions</h3>
+                    <button type="button" class="btn" id="addQuestionBtn">Add Question</button>
+                </div>
+
+                <div id="questionsBuilder" class="questions-builder"></div>
+
+                <textarea name="questions_json" id="questionsJson" hidden></textarea>
+                <div class="actions">
+                    <button type="submit" class="btn primary">Push Configuration to Servers</button>
+                </div>
+            </form>
+        </section>
+        <section>
+            <h2>Recent Results</h2>
+            {% if results and results|length > 0 %}
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>When</th>
+                            <th>Server</th>
+                            <th>Username</th>
+                            <th>Score</th>
+                            <th>Reason</th>
+                            <th>Session</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in results %}
+                        <tr>
+                            <td>{{ r.ended_at | round(0) }}</td>
+                            <td>{{ r.server_id }}</td>
+                            <td>{{ r.username }}</td>
+                            <td>{{ r.score }}/{{ r.total }}</td>
+                            <td>{{ r.ended_reason }}</td>
+                            <td class="muted">{{ r.session_id }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="muted">No results yet.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+
+</html>

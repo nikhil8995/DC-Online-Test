@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exam</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>Exam Session</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/student">Back to Exams</a>
+        </nav>
+    </header>
+    <main>
+        {% if message %}
+        <div class="msg success">{{ message }}</div>
+        {% endif %}
+        {% if error %}
+        <div class="msg error">{{ error }}</div>
+        {% endif %}
+        {% if feedback %}
+        <div class="msg">Feedback: {{ feedback }}</div>
+        {% endif %}
+
+        {% if final_score %}
+        <section class="card exam-card">
+            <h2>Exam Finished</h2>
+            <p>Your Final Score: <strong>{{ final_score }}</strong></p>
+        </section>
+        {% elif question %}
+        <section class="card exam-card">
+            <h2>Question {{ question.id }}</h2>
+            <p class="question-text">{{ question.question }}</p>
+            <form method="post" action="/student/answer" class="options-form">
+                <input type="hidden" name="session_id" value="{{ session_id }}" />
+                <input type="hidden" name="question_id" value="{{ question.id }}" />
+                <div class="options">
+                    {% for opt in question.options %}
+                    <label class="option">
+                        <input type="radio" name="answer" value="{{ opt[0] }}" required />
+                        <span>{{ opt }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                <button type="submit">Submit Answer</button>
+            </form>
+        </section>
+        {% else %}
+        <p>No question to display.</p>
+        {% endif %}
+    </main>
+</body>
+
+</html>
