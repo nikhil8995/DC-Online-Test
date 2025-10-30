@@ -139,7 +139,8 @@ def handle_start_exam():
             if response.status_code != 200:
                 return render_template('student.html', exams=fetch_exam_infos(), error=response.json().get('error', 'Failed to start exam')), response.status_code
             data = response.json()
-            return render_template('student_exam.html', session_id=data.get('session_id'), question=data.get('question'), message=data.get('message'))
+            # Pass deadline/time_remaining to the template so client can show an accurate countdown
+            return render_template('student_exam.html', session_id=data.get('session_id'), question=data.get('question'), message=data.get('message'), deadline=data.get('deadline'), time_remaining=data.get('time_remaining'))
         return jsonify(response.json()), response.status_code
     except requests.RequestException as e:
         print(f"[LB] Error forwarding request to {target_server['id']}: {e}")
@@ -360,7 +361,7 @@ def student_answer():
         return render_template('student_exam.html', session_id=session_id, final_score=result['final_score'], message=result.get('message', 'Exam finished!'), feedback=result.get('feedback'))
     else:
         next_q = result.get('next_question')
-        return render_template('student_exam.html', session_id=session_id, question=next_q, feedback=result.get('feedback'))
+        return render_template('student_exam.html', session_id=session_id, question=next_q, feedback=result.get('feedback'), time_remaining=result.get('time_remaining'))
 
 
 if __name__ == '__main__':

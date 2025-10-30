@@ -5,16 +5,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Exam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 
 <body>
     <header>
-        <h1>Exam Session</h1>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/student">Back to Exams</a>
-        </nav>
+        <div class="header-container">
+            <h1>Exam Session</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/student">Back to Exams</a>
+            </nav>
+        </div>
     </header>
     <main>
         {% if message %}
@@ -34,6 +37,9 @@
         </section>
         {% elif question %}
         <section class="card exam-card">
+            <div class="exam-meta" style="display:flex;justify-content:flex-end;margin-bottom:0.75rem;">
+                <div id="timer" class="badge">Time left: <span id="time">--:--</span></div>
+            </div>
             <h2>Question {{ question.id }}</h2>
             <p class="question-text">{{ question.question }}</p>
             <form method="post" action="/student/answer" class="options-form">
@@ -54,6 +60,12 @@
         <p>No question to display.</p>
         {% endif %}
     </main>
+    <script>
+        // Provide initial time remaining (seconds) to the client timer.
+        // `time_remaining` may be passed by the load balancer when rendering.
+        window.__INIT_TIME_REMAINING__ = {{ time_remaining | default (0) | tojson }};
+    </script>
+    <script src="/static/app.js"></script>
 </body>
 
 </html>
